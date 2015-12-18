@@ -164,7 +164,7 @@ class ViewController: UIViewController {
     }
 }
 
-extension CGFloat {		//var forceConversions = [0.020833333, 0.0166666, 0.0138888883369941];
+extension CGFloat {
     func grams(tare: CGFloat) -> String {
         let defaults: NSUserDefaults = NSUserDefaults.standardUserDefaults()
 
