@@ -116,11 +116,10 @@ class ViewController: UIViewController {
         var touchPoint: CGPoint = CGPoint()
         var size: CGFloat = CGFloat()
         var touch: UITouch = UITouch()
-        var touch1: UITouch? = nil
 
         var i: Int = 0;
         for obj in touches {
-            if(obj.force == obj.maximumPossibleForce && obj.maximumPossibleForce > 1) {
+			if(obj.force == obj.maximumPossibleForce && obj.maximumPossibleForce > 1) {
                 for sublayer in self.view.layer.sublayers! {
                     if(sublayer.valueForKey("tag") as? String == "99") {
                         sublayer.removeFromSuperlayer()
@@ -129,18 +128,13 @@ class ViewController: UIViewController {
 				self.view.layer.backgroundColor = UIColor.whiteColor().CGColor
                 return
             }
-            if(i == 0) {
-            	touch=obj
-            } else if(i == 1) {
-                touch1 = obj
-            }
+            touch = obj
             i++
-        }
 
-        touchPoint = touch.locationInView(self.view)
-        size = touch.force*4.2 / CGFloat(0.020000)
+            touchPoint = touch.locationInView(self.view)
+            size = touch.force*4.2 / CGFloat(0.020000)
 
-        let touchView: CAShapeLayer = CAShapeLayer()
+	        let touchView: CAShapeLayer = CAShapeLayer()
             touchView.setValue("99", forKey: "tag")
             if(size < 10) { size = 10 }
 	        if(touch.maximumPossibleForce <= 1) { size = 100 + (touch.locationInView(self.view).x + touch.locationInView(self.view).y)/2 }
@@ -171,6 +165,7 @@ class ViewController: UIViewController {
             touchView.cornerRadius = size/2;
             self.view.layer.addSublayer(touchView)
         }
+    }
 }
 
 extension CGFloat {		//var forceConversions = [0.020833333, 0.0166666, 0.0138888883369941];
