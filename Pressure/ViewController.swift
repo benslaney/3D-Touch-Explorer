@@ -51,9 +51,6 @@ class ViewController: UIViewController {
         view.multipleTouchEnabled = true
         weight.text = "0 grams"
         updateSensitivityText()
-
-
-
     }
 
     func tapActionSensitivity() {
@@ -132,12 +129,11 @@ class ViewController: UIViewController {
             i++
 
             touchPoint = touch.locationInView(self.view)
-            size = touch.force*4.2 / CGFloat(0.020000)
+            size = touch.force*2.6 / CGFloat(0.020000)
 
 	        let touchView: CAShapeLayer = CAShapeLayer()
             touchView.setValue("99", forKey: "tag")
-            if(size < 10) { size = 10 }
-	        if(touch.maximumPossibleForce <= 1) { size = 100 + (touch.locationInView(self.view).x + touch.locationInView(self.view).y)/2 }
+	        if(touch.maximumPossibleForce <= 1) { size = 10 + (touch.locationInView(self.view).x + touch.locationInView(self.view).y)/2 }
 
             if(lrRed == 0) {
                 lrRed = (CGFloat(arc4random()) / 0x100000000)
