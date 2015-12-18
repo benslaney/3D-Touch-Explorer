@@ -22,7 +22,6 @@
 		B509988A1BF57AB40039ABDC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B509988D1BF57AB40039ABDC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B509988F1BF57AB40039ABDC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B555CF591BF9B8000087481D /* SceneKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SceneKit.framework; path = Pressure/SceneKit.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,7 +38,6 @@
 		B50998771BF57AB40039ABDC = {
 			isa = PBXGroup;
 			children = (
-				B555CF591BF9B8000087481D /* SceneKit.framework */,
 				B50998821BF57AB40039ABDC /* Pressure */,
 				B50998811BF57AB40039ABDC /* Products */,
 			);
