@@ -51,6 +51,7 @@ class ViewController: UIViewController {
         view.multipleTouchEnabled = true
         weight.text = "0 grams"
         updateSensitivityText()
+        view.backgroundColor = UIColor.blackColor()
     }
 
     func tapActionSensitivity() {
@@ -78,22 +79,40 @@ class ViewController: UIViewController {
 
     }
 
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-		touchy(touches)
-        let touch = touches.first as UITouch?
-        currentForce = touch!.force
-        weight.text = "\(currentForce.grams(tareForce))g"
-    }
+//    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+//		touchy(touches)
+//        let touch = touches.first as UITouch?
+//        currentForce = touch!.force
+//        weight.text = "\(currentForce.grams(tareForce))g"
+//    }
 
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        touchy(touches)
+        var touch: UITouch = UITouch()
 
-        let touch = touches.first as UITouch?
-        currentForce = touch!.force
+        for obj in touches {
+            if(obj.force == obj.maximumPossibleForce && obj.maximumPossibleForce > 1) {
+                for sublayer in self.view.layer.sublayers! {
+                    if(sublayer.valueForKey("tag") as? String == "99") {
+                        sublayer.removeFromSuperlayer()
+                    }
+                }
+                self.view.layer.backgroundColor = UIColor.blackColor().CGColor
+                return
+            }
+            touch = obj
+
+            if let coalescedTouches = event!.coalescedTouchesForTouch(touch) {
+                for coalescedTouch in coalescedTouches {
+                    touchy(coalescedTouch)
+                }
+            }
+        }
+        currentForce = touches.first!.force
         weight.text = "\(currentForce.grams(tareForce))g"
         self.view.bringSubviewToFront(weight)
         self.view.bringSubviewToFront(sensitivity)
     }
+
 
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         currentForce = 0
@@ -109,58 +128,45 @@ class ViewController: UIViewController {
         NSLog("override func didReceiveMemoryWarning() {")
     }
 
-    func touchy(touches: Set<UITouch>) {
+    func touchy(touch: UITouch) {
         var touchPoint: CGPoint = CGPoint()
         var size: CGFloat = CGFloat()
-        var touch: UITouch = UITouch()
 
-        var i: Int = 0;
-        for obj in touches {
-			if(obj.force == obj.maximumPossibleForce && obj.maximumPossibleForce > 1) {
-                for sublayer in self.view.layer.sublayers! {
-                    if(sublayer.valueForKey("tag") as? String == "99") {
-                        sublayer.removeFromSuperlayer()
-                    }
-                }
-				self.view.layer.backgroundColor = UIColor.whiteColor().CGColor
-                return
-            }
-            touch = obj
-            i++
+        touchPoint = touch.locationInView(self.view)
+        size = touch.force*100
+        NSLog("force:%.2f size:%.2f", touch.force, size)
+        if(size == 0) { size = 0.4 } // minimum visible size
 
-            touchPoint = touch.locationInView(self.view)
-            size = touch.force*2.6 / CGFloat(0.020000)
+        let touchView: CAShapeLayer = CAShapeLayer()
+        touchView.setValue("99", forKey: "tag")
+        if(touch.maximumPossibleForce <= 1) { size = 10 + (touch.locationInView(self.view).x + touch.locationInView(self.view).y)/2 }
 
-	        let touchView: CAShapeLayer = CAShapeLayer()
-            touchView.setValue("99", forKey: "tag")
-	        if(touch.maximumPossibleForce <= 1) { size = 10 + (touch.locationInView(self.view).x + touch.locationInView(self.view).y)/2 }
+        if(lrRed == 0) {
+            lrRed = (CGFloat(arc4random()) / 0x100000000)
+            lrGreen = (CGFloat(arc4random()) / 0x100000000)
+            lrBlue = (CGFloat(arc4random()) / 0x100000000)
+            lrAlpha = touch.force/6;
+        }
 
-            if(lrRed == 0) {
-                lrRed = (CGFloat(arc4random()) / 0x100000000)
-                lrGreen = (CGFloat(arc4random()) / 0x100000000)
-                lrBlue = (CGFloat(arc4random()) / 0x100000000)
-                lrAlpha = touch.force/6;
-            }
+        lrRed = ((lrRed + (CGFloat(arc4random()) / 0x100000000) + touch.force/32) / 2) - touch.force/24
+        lrGreen = ((lrGreen + (CGFloat(arc4random()) / 0x100000000) + touch.force/32) / 2) - touch.force/24
+        lrBlue = ((lrBlue + (CGFloat(arc4random()) / 0x100000000) + touch.force/32) / 2) - touch.force/24
+//            lrAlpha = ((lrAlpha + (CGFloat(arc4random()) / 0x100000000) - (touch.force/32)) / 2)// - touch.force/24
 
-            lrRed = ((lrRed + (CGFloat(arc4random()) / 0x100000000) + touch.force/32) / 2) - touch.force/24
-            lrGreen = ((lrGreen + (CGFloat(arc4random()) / 0x100000000) + touch.force/32) / 2) - touch.force/24
-            lrBlue = ((lrBlue + (CGFloat(arc4random()) / 0x100000000) + touch.force/32) / 2) - touch.force/24
-            lrAlpha = ((lrAlpha + (CGFloat(arc4random()) / 0x100000000) + touch.force/32) / 2) - touch.force/24
-
-            touchView.backgroundColor = UIColor(red:lrRed , green:lrGreen, blue:lrBlue, alpha:1.0).CGColor
+        touchView.backgroundColor = UIColor(red:lrRed , green:lrGreen, blue:lrBlue, alpha:1.0).CGColor
 
 //uncomment the following code to draw rings instead of circles
-//            touchView.backgroundColor = UIColor.clearColor().CGColor
-//            touchView.borderWidth = size/6
-//            if(size < 100) { touchView.borderWidth = 100 }
-//            touchView.borderColor = UIColor(red:lrRed , green:lrGreen, blue:lrBlue, alpha:1.0).CGColor
+//      touchView.backgroundColor = UIColor.clearColor().CGColor
+//      touchView.borderWidth = size/6
+//      if(size < 100) { touchView.borderWidth = 100 }
+//      touchView.borderColor = UIColor(red:lrRed , green:lrGreen, blue:lrBlue, alpha:1.0).CGColor
 
-//            touchView.shouldRasterize = true
+//      touchView.shouldRasterize = true
 
-            touchView.frame = CGRectMake(touchPoint.x-(size/2), touchPoint.y-(size/2), size, size)
-            touchView.cornerRadius = size/2;
-            self.view.layer.addSublayer(touchView)
-        }
+        touchView.frame = CGRectMake(touchPoint.x-(size/2), touchPoint.y-(size/2), size, size)
+        touchView.cornerRadius = size/2;
+        self.view.layer.addSublayer(touchView)
+
     }
 }
 
